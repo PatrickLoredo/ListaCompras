@@ -1162,12 +1162,25 @@ async function abrirLeitorCodigoBarras() {
                 video,
                 (resultado, erro, controles) => {
                     if (resultado) {
+                        // Preencher o campo com o código lido.
                         campoCodigo.value = resultado.getText();
 
-                        status.textContent =
-                            'Código lido: ' + resultado.getText();
+                        // Disparar evento para outros códigos que escutem alterações.
+                        campoCodigo.dispatchEvent(
+                            new Event('input', { bubbles: true })
+                        );
 
+                        campoCodigo.dispatchEvent(
+                            new Event('change', { bubbles: true })
+                        );
+
+                        // Encerrar a câmera.
                         fecharLeitorCodigoBarras();
+
+                        // Fechar o modal automaticamente.
+                        if (modalCodigoBarras) {
+                            modalCodigoBarras.hide();
+                        }
                     }
                 }
             );
