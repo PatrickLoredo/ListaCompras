@@ -1,0 +1,110 @@
+a{
+    text-decoration: none;
+}
+
+.labelText{
+    padding-bottom: 7px;
+}
+
+.uppercase,
+.font-button,
+.labelText,
+input,
+#navbar-superior li button,
+#campoCadastro select{
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.tamanho06{
+    font-size: .6rem;
+}
+
+.tamanho07,
+.labelText,
+#campoCadastro input,
+#campoCadastro select{
+    font-size: .7rem;
+}
+.tamanho08,
+#navbar-superior li button{
+    font-size: 0.8rem;
+}
+
+.tamanho09{
+    font-size: .9rem;
+}
+.tamanho10{
+    font-size: 1rem;
+}
+.tamanho11{
+    font-size: 1.1rem;
+}
+.tamanho12{
+    font-size: 1.2rem;
+}
+.tamanho13{
+    font-size: 1.3rem;
+}
+.tamanho14{
+    font-size: 1.4rem;
+}
+.tamanho15{
+    font-size: 1.5rem;
+}
+.tamanho16{
+    font-size: 1.6rem;
+}
+.tamanho17{
+    font-size: 1.7rem;
+}
+.tamanho18{
+    font-size: 1.8rem;
+}
+.tamanho19{
+    font-size: 1.9rem;
+}
+.tamanho20{
+    font-size: 2rem;
+}
+
+.flexCenter,
+.labelText{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.textoCenter,
+input,
+#campoCadastro select{
+    text-align: center;
+}
+
+.buttonHeight4{
+    height: 4rem;
+}
+
+.bgBlue{
+    background-color: #0b5ed7;
+}
+.colorBlue{
+    color: #0b5ed7;
+}
+
+#btnSupensos button{
+    width: 90px;
+    margin-top: 0.4rem;
+}
+
+.btnImageProduto01,
+.btnImageProduto02{
+    position: absolute;
+    top: 11.5%;
+    max-width: 10%;
+    transform: scale(1.2);
+}
+.btnImageProduto01{
+    left: 10%;
+}
+

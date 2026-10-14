@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--CSS-->
+    <link rel="stylesheet" href="/listaCompras/listaCompras.css">
+
+    <!--FONTAWESOME-->
+    <script src="https://kit.fontawesome.com/e9987e6d2b.js" crossorigin="anonymous"></script>
+
+    <!--BOOTSTRAP-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+
+    <!--BOOTSTRAP ICONS-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <!--IMPORTADOR DE DOCUMENTOS-->
+    <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+    <!--JAVASCRIPT-->
+    <script src="/listaCompras/listaCompras.js" defer></script>
+
+
+    <title>Lista de Compras</title>
+</head>
+
+<body>
+    <!--NAVBAR-->
+    <nav class="navbar navbar-expand-lg bg-primary text-dark navbar-dark fixed-top" style="z-index: 9999;">
+        <div class="container">
+            <a href="index.html" class="navbar-brand text-light">
+                <i class="fa fa-cart-shopping"></i>&nbsp;&nbsp;
+                <span class="uppercase tamanho12">Lista de Compras</span>
+            </a>
+        </div>
+    </nav>
+
+    <main>
+        <!--BUTTONS SUSPENSOS NAVABAR-->
+        <div class="row mt-5 fixed-top flexCenter bg-white pb-2">
+            <div class="col d-none d-lg-block"></div>
+            <div class="col-auto gap-1 flexCenter" id="btnSupensos">
+                <button class="btn btn-success">
+                    <div class="row">
+                        <i class="fa fa-circle-plus"></i>
+                    </div>
+                    <div class="row">
+                        <span class="uppercase tamanho06">adicionar</span>
+                    </div>
+                </button>
+
+                <button class="btn btn-dark">
+                    <div class="row">
+                        <i class="fa fa-list"></i>
+                    </div>
+                    <div class="row">
+                        <span class="uppercase tamanho06">listas</span>
+                    </div>
+                </button>
+
+                <button
+                    class="btn btn-danger"
+                    onclick="
+                        abreCampoCadastro('Cadastros de Estabelecimentos');
+                        carregarEstados('selectESTADOCadastroEstabelecimento');
+                        geraId('SUP', arrayEstabelecimentos, 'inputIDCadastroEstabelecimento');
+                        populaDados('estabelecimento', 'selectESTABELECIMENTOCadastroEstabelecimento', arrayEstabelecimentos, 'estabelecimento');
+                        populaDados('cidade', 'selectCIDADECadastroEstabelecimento', arrayEstabelecimentos, 'cidade');">
+                    <div class="row">
+                        <i class="fa fa-shop"></i>
+                    </div>
+
+                    <div class="row">
+                        <span class="uppercase tamanho06">Estabelecim.</span>
+                    </div>
+                </button>
+
+
+                <button class="btn btn-danger"
+                id="btnProdutos"
+                onclick="abreCampoCadastro('Cadastros de Produtos'),
+                geraId('PRD', arrayProdutos, 'inputIDCadastroProduto');
+                popularSelect('selectCATEGORIACadastroProduto', arrayCategorias)">
+                    <div class="row">
+                        <i class="fa fa-boxes"></i>
+                    </div>
+                    <div class="row">
+                        <span class="uppercase tamanho06">produtos</span>
+                    </div>
+                </button>
+
+                <button class="btn btn-danger"
+                onclick="abreCampoCadastro('Cadastros de Categorias'),
+                geraId('CTG', arrayCategorias, 'inputIDCadastroCategoria')"
+                id="btnCategorias">
+                    <div class="row">
+                        <i class="fa fa-tag"></i>
+                    </div>
+                    <div class="row">
+                        <span class="uppercase tamanho06">categorias</span>
+                    </div>
+                </button>
+            </div>
+            <div class="col-1 d-none d-lg-block"></div>
+        </div>
+
+        <!--AREA DE CADASTRO-->
+        <section class="mt-5 container" id="campoCadastro">
+            <article style="margin-top: 9rem;">
+                <div class="card" id="cardPrincipalCadastro">
+                    <div class="card-header uppercase tamanho09 fw-bold bg-danger 
+                    text-light text-center" id="campoCadastroHeader"></div>
+
+                    <div class="card-body" id="campoCadastroBody"></div>
+                </div>
+            </article>
+        </section>
+    </main>
+</body>
+
+</html>
