@@ -592,9 +592,73 @@ function abreCampoCadastro(tipo) {
                         <!--CODIGO DE BARRAS PRODUTO-->
                         <div class="col-12 col-lg-auto mb-3">
                             <label for="inputCodigoBarrasProduto" class="labelText">
-                                Código de Barrasdo Produto
+                                Código de Barras do Produto
                             </label>
-                            <input type="text" class="form-control" id="inputCodigoBarrasProduto">
+                            <div class="input-group">
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="inputCodigoBarrasProduto"
+                                    placeholder="Código de barras"
+                                >
+
+                                <button
+                                    class="btn btn-sm btn-danger input-group-text"
+                                    type="button"
+                                    onclick="abrirLeitorCodigoBarras()"
+                                    title="Ler código de barras">
+
+                                    <i class="fa fa-barcode"></i>
+                                </button>
+                            </div>
+
+                            <!-- MODAL DO LEITOR -->
+                            <div class="modal fade" id="modalLeitorCodigoBarras"
+                                tabindex="-1" aria-hidden="true">
+
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">
+                                                <i class="fa fa-barcode"></i>
+                                                Ler código de barras
+                                            </h5>
+
+                                            <button type="button" class="btn-close"
+                                                data-bs-dismiss="modal"
+                                                aria-label="Fechar"
+                                                onclick="fecharLeitorCodigoBarras()">
+                                            </button>
+                                        </div>
+
+                                        <div class="modal-body text-center">
+                                            <video id="videoLeitorCodigoBarras"
+                                                class="w-100"
+                                                autoplay
+                                                muted
+                                                playsinline
+                                                style="max-height: 350px; object-fit: contain;">
+                                            </video>
+
+                                            <p id="statusLeitorCodigoBarras"
+                                            class="small text-secondary mt-3">
+                                                Posicione o código de barras diante da câmera.
+                                            </p>
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button type="button"
+                                                class="btn btn-secondary"
+                                                data-bs-dismiss="modal"
+                                                onclick="fecharLeitorCodigoBarras()">
+                                                Cancelar
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <!--NOME PRODUTO-->
@@ -1055,6 +1119,92 @@ function carregarFotoProduto(input) {
     };
 
     leitor.readAsDataURL(arquivo);
+}
+
+let leitorCodigoBarras = null;
+let controlesLeitorCodigoBarras = null;
+let modalCodigoBarras = null;
+
+async function abrirLeitorCodigoBarras() {
+    const video = document.getElementById('videoLeitorCodigoBarras');
+    const status = document.getElementById('statusLeitorCodigoBarras');
+    const campoCodigo = document.getElementById('inputCodigoBarrasProduto');
+
+    if (!video || !status || !campoCodigo) {
+        console.error('Elementos do leitor de código de barras não encontrados.');
+        return;
+    }
+
+    if (!window.ZXingBrowser) {
+        alert('A biblioteca de leitura não foi carregada. Verifique a conexão com a internet.');
+        return;
+    }
+
+    try {
+        modalCodigoBarras = bootstrap.Modal.getOrCreateInstance(
+            document.getElementById('modalLeitorCodigoBarras')
+        );
+
+        modalCodigoBarras.show();
+
+        status.textContent = 'Iniciando câmera...';
+
+        leitorCodigoBarras = new ZXingBrowser.BrowserMultiFormatReader();
+
+        controlesLeitorCodigoBarras =
+            await leitorCodigoBarras.decodeFromConstraints(
+                {
+                    video: {
+                        facingMode: { ideal: 'environment' }
+                    },
+                    audio: false
+                },
+                video,
+                (resultado, erro, controles) => {
+                    if (resultado) {
+                        campoCodigo.value = resultado.getText();
+
+                        status.textContent =
+                            'Código lido: ' + resultado.getText();
+
+                        fecharLeitorCodigoBarras();
+                    }
+                }
+            );
+
+        status.textContent =
+            'Posicione o código de barras diante da câmera.';
+
+    } catch (erro) {
+        console.error('Erro ao abrir o leitor:', erro);
+
+        status.textContent =
+            'Não foi possível acessar a câmera. Verifique as permissões do navegador.';
+
+        fecharLeitorCodigoBarras();
+    }
+}
+
+function fecharLeitorCodigoBarras() {
+    if (controlesLeitorCodigoBarras) {
+        controlesLeitorCodigoBarras.stop();
+        controlesLeitorCodigoBarras = null;
+    }
+
+    if (leitorCodigoBarras) {
+        leitorCodigoBarras = null;
+    }
+
+    const video = document.getElementById('videoLeitorCodigoBarras');
+
+    if (video) {
+        if (video.srcObject) {
+            video.srcObject.getTracks().forEach(track => track.stop());
+            video.srcObject = null;
+        }
+
+        video.pause();
+    }
 }
 
 window.onload = () => {
