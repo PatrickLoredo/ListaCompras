@@ -545,7 +545,7 @@ function abreCampoCadastro(tipo) {
                         <!-- Input que receberá a foto -->
                         <input type="file"
                             id="inputFotoProduto"
-                            accept="image/*"
+                            accept="image/"
                             hidden>
 
                         <!-- Canvas para capturar a imagem -->
@@ -954,6 +954,7 @@ function popularSelect(idSelect, nomeArray) {
         selectExibicao.appendChild(optionSelect);
     });
 }
+
 function calculaValorUnitario() {
     const campoInputQtdKitProduto = document.getElementById('inputQtdKitProduto');
     const campoinputVolumeProduto = document.getElementById('inputVolumeProduto');
@@ -977,7 +978,6 @@ function calculaValorUnitario() {
     campoInputValorUnitarioKitProduto.value = totalPrecoUnitarioKit.toFixed(2);
     campoinputValorUnitarioPesoProduto.value = totalPrecoPeso.toFixed(5)
 }
-
 
 function abrirCameraProduto() {
     const inputFoto = document.getElementById('inputFotoProduto');
@@ -1017,7 +1017,21 @@ function abrirCameraProduto() {
     };
 }
 
+function carregarFotoProduto(input) {
+    const arquivo = input.files[0];
 
+    if (!arquivo) {
+        return;
+    }
+
+    const leitor = new FileReader();
+
+    leitor.onload = function (evento) {
+        fotoProduto = evento.target.result;
+    };
+
+    leitor.readAsDataURL(arquivo);
+}
 
 window.onload = () => {
     ordenaArray(arrayCategorias);
