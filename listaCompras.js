@@ -14,22 +14,22 @@ class Estabelecimento {
     constructor(
         id,
         nome,
+        estado,
         cidade,
         endereco,
         numero,
         bairro,
         status,
-        contato,
         nota = 0
     ) {
         this.id = id;
-        this.estabelecimento = nome;
+        this.nome = nome;
+        this.estado = estado;
         this.cidade = cidade;
         this.endereco = endereco;
         this.numero = numero;
         this.bairro = bairro;
         this.status = status;
-        this.contato = contato;
         this.nota = nota;
     }
 }
@@ -55,7 +55,7 @@ class Produto {
         this.codigoBarras = codigoBarras;
         this.categoria = categoria;
         this.nomeProduto = nomeProduto;
-        this.estabelecimento = estabelecimento;
+        this.nome = estabelecimento;
         this.qtdKit = qtdKit;
         this.volume = volume;
         this.valorEmbalagem = valorEmbalagem;
@@ -152,7 +152,7 @@ async function carregarCidades(siglaEstado, selectCidade) {
             const option = document.createElement('option');
 
             // O valor salvo será o código IBGE do município.
-            option.value = cidade.id;
+            option.value = cidade.nome;
 
             // O texto exibido será o nome do município.
             option.textContent = cidade.nome;
@@ -281,50 +281,9 @@ function abreCampoCadastro(tipo) {
     // FORMULÁRIO DE ESTABELECIMENTOS
     if (tipo === 'Cadastros de Estabelecimentos') {
         localCampoBody.innerHTML = `
-            <div class="row">
-                <div class="col-lg-1 col-3 mb-3">
-                    <label for="inputIDCadastroEstabelecimento" class="labelText">ID</label>
-                    <input type="text" id="inputIDCadastroEstabelecimento" class="form-control" disabled>
-                </div>
-
-                <div class="col-lg-6 col-9 mb-3">
-                    <label for="selectESTABELECIMENTOCadastroEstabelecimento" class="labelText">Nome do Estabelecimento</label>
-                    <div class="input-group">
-                        <select class="form-select" id="selectESTABELECIMENTOCadastroEstabelecimento"></select>
-                        <button class="btn btn-sm btn-dark input-group-text" type="button" 
-                        data-bs-toggle="collapse" 
-                        data-bs-target="#collapseNovoEstabelecimento">
-                            <i class="fa fa-plus"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="col-3 col-lg-1 mb-3">
-                    <label for="selectESTADOCadastroEstabelecimento" class="labelText">Estado</label>
-                    <select class="form-select" id="selectESTADOCadastroEstabelecimento"></select>
-                </div>
-
-                <div class="col mb-3">
-                    <label for="selectCIDADECadastroEstabelecimento" class="labelText">Cidade</label>
-                    <select id="selectCIDADECadastroEstabelecimento" class="form-select" disabled>
-                        <option value="">
-                            Selecione primeiro um estado
-                        </option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- COLLAPSE NOVO ESTABELECIMENTO -->
-            <div class="row collapse" id="collapseNovoEstabelecimento">
+            <div class="row" id="collapseNovoEstabelecimento">
                 <div class="col">
                     <div class="card">
-                        <div class="card-header bg-primary text-light flexCenter">
-                            <i class="fa fa-shop"></i>&nbsp;&nbsp;
-                            <span class="uppercase tamanho08 fw-bold">
-                                Cadastro de Novo Estabelecimento
-                            </span>
-                        </div>
-
                         <div class="card-body">
                             <div class="row">
                                 <div class="mb-3 col-lg-1 col-3">
@@ -337,7 +296,7 @@ function abreCampoCadastro(tipo) {
                                     <input type="text" id="inputNomeEstabelecimento" class="form-control" required>
                                 </div>
 
-                                <div class="mb-3 col-lg-1 col-3">
+                                <div class="mb-3 col-lg-2 col-3">
                                     <label for="selectEstadoEstabelecimento" class="labelText">Estado</label>
                                     <select id="selectEstadoEstabelecimento" class="form-select" required>
                                         <option value="">
@@ -346,7 +305,7 @@ function abreCampoCadastro(tipo) {
                                     </select>
                                 </div>
 
-                                <div class="mb-3 col-lg-5 col-9">
+                                <div class="mb-3 col-lg-4 col-9">
                                     <label for="selectCidadeEstabelecimento" class="labelText">Cidade</label>
                                     <select id="selectCidadeEstabelecimento" class="form-select" disabled required>
                                         <option value="">
@@ -394,7 +353,7 @@ function abreCampoCadastro(tipo) {
                 <div class="row">
                     <div class="col flexCenter gap-2">
                         <button type="button" class="btn btn-sm btn-success"
-                        onclick="alert('btn Salvar ${tipo}')">
+                        onclick="salvarCadastro('cadastroEstabelecimento')">
                             <i class="fa fa-save"></i>&nbsp;&nbsp;
                             <span class="uppercase tamanho08">Salvar</span>
                         </button>
@@ -421,7 +380,8 @@ function abreCampoCadastro(tipo) {
                         data-bs-toggle="collapse"
                         data-bs-target="#exibicaoEstabelecimentosTodos"
                         aria-expanded="false"
-                        aria-controls="exibicaoEstabelecimentosTodos">
+                        aria-controls="exibicaoEstabelecimentosTodos"
+                        onclick="popularExibicao('produto','nome','estabelecimento', 'exibicaoEstabelecimentosTodos', arrayEstabelecimentos)">
 
                         <span class="uppercase">ver todos ${tipo}</span>&nbsp;&nbsp;&nbsp;
                         <i class="fa fa-eye"></i>
@@ -455,6 +415,8 @@ function abreCampoCadastro(tipo) {
 
         // Também preencher o campo de ID da área principal.
         geraId('est', arrayEstabelecimentos, 'inputIDCadastroEstabelecimento');
+
+        popularExibicao('produto', 'exibicaoEstabelecimentosTodos', arrayEstabelecimentos)
     }
 
     // FORMULÁRIO DE PRODUTOS
@@ -960,6 +922,55 @@ function salvarCadastro(tipo) {
         ordenaArray(arrayCategorias)
         popularExibicao('categoria', 'cardBodyExibicaoCategorias', arrayCategorias)
     }
+if (tipo === 'cadastroEstabelecimento') {
+    const inputIdEstabelecimento =document.getElementById('inputIdEstabelecimento');
+    const inputNomeEstabelecimento =document.getElementById('inputNomeEstabelecimento');
+    const selectEstadoEstabelecimento =document.getElementById('selectEstadoEstabelecimento');
+    const selectCidadeEstabelecimento =document.getElementById('selectCidadeEstabelecimento');
+    const inputEnderecoEstabelecimento =document.getElementById('inputEnderecoEstabelecimento');
+    const inputNumeroEstabelecimento =document.getElementById('inputNumeroEstabelecimento');
+    const inputBairroEstabelecimento =document.getElementById('inputBairroEstabelecimento');
+    const inputNotaEstabelecimento =document.getElementById('inputNotaEstabelecimento');
+    const statusEstabelecimento = 'Ativo';
+
+    // Validar campos obrigatórios.
+    if (
+        inputNomeEstabelecimento.value.trim() === '' ||
+        selectEstadoEstabelecimento.value.trim() === '' ||
+        selectCidadeEstabelecimento.value.trim() === ''
+    ) {
+        alert('Preencha todos os campos obrigatórios: NOME, ESTADO e CIDADE.');
+        return;
+    }
+
+    // Criar o objeto estabelecimento.
+    const novoEstabelecimento = new Estabelecimento(
+        inputIdEstabelecimento.value.trim(),
+        inputNomeEstabelecimento.value.trim(),
+        selectEstadoEstabelecimento.value.trim(),
+        selectCidadeEstabelecimento.value.trim(),
+        inputEnderecoEstabelecimento.value.trim(),
+        inputNumeroEstabelecimento.value.trim(),
+        inputBairroEstabelecimento.value.trim(),
+        statusEstabelecimento,
+        inputNotaEstabelecimento.value.trim()
+    );
+
+    arrayEstabelecimentos.push(novoEstabelecimento);
+    localStorage.setItem('cadastroEstabelecimento' , JSON.stringify(arrayEstabelecimentos));
+
+    inputNomeEstabelecimento.value = ''
+    selectEstadoEstabelecimento.value = ''
+    selectCidadeEstabelecimento.value = ''
+    inputEnderecoEstabelecimento.value = ''
+    inputNumeroEstabelecimento.value = ''
+    inputBairroEstabelecimento.value = ''
+
+    geraId('EST', arrayEstabelecimentos, 'inputIDCadastroEstabelecimento');
+    alert(`Estabelecimento ${inputNomeEstabelecimento.value.toUpperCase()} cadastrado com Sucesso`)
+    popularExibicao('produto', 'exibicaoEstabelecimentosTodos', arrayEstabelecimentos)
+
+}
 }
 
 function popularExibicao(escolha, idCardExibicao, nomeArray) {
@@ -1072,7 +1083,6 @@ function abrirCameraProduto() {
 
 function carregarFotoProduto(input) {
     const arquivo = input.files[0];
-
     const preview = document.getElementById('previewFoto');
     const placeholder = document.getElementById('placeholderFoto');
     const video = document.getElementById('videoCameraProduto');
@@ -1222,6 +1232,6 @@ function fecharLeitorCodigoBarras() {
 
 window.onload = () => {
     ordenaArray(arrayCategorias);
-    document.getElementById('btnProdutos').click();
+    //document.getElementById('btnProdutos').click();
     calculaValorUnitario();
 };

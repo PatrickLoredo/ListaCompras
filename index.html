@@ -75,7 +75,7 @@
                     onclick="
                         abreCampoCadastro('Cadastros de Estabelecimentos');
                         carregarEstados('selectESTADOCadastroEstabelecimento');
-                        geraId('SUP', arrayEstabelecimentos, 'inputIDCadastroEstabelecimento');
+                        geraId('EST', arrayEstabelecimentos, 'inputIDCadastroEstabelecimento');
                         populaDados('estabelecimento', 'selectESTABELECIMENTOCadastroEstabelecimento', arrayEstabelecimentos, 'estabelecimento');
                         populaDados('cidade', 'selectCIDADECadastroEstabelecimento', arrayEstabelecimentos, 'cidade');">
                     <div class="row">
@@ -117,7 +117,7 @@
         </div>
 
         <!--AREA DE CADASTRO-->
-        <section class="mt-5 container" id="campoCadastro">
+        <section class="mt-5 container d-none" id="campoCadastro">
             <article style="margin-top: 9rem;">
                 <div class="card" id="cardPrincipalCadastro">
                     <div class="card-header uppercase tamanho09 fw-bold bg-danger 
