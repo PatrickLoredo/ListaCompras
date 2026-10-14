@@ -38,6 +38,8 @@ class Produto {
     constructor(
         id,
         dataCadastro,
+        foto,
+        codigoBarras,
         categoria,
         nomeProduto,
         estabelecimento,
@@ -49,6 +51,8 @@ class Produto {
     ) {
         this.id = id;
         this.dataCadastro = dataCadastro;
+        this.foto = foto;
+        this.codigoBarras = codigoBarras;
         this.categoria = categoria;
         this.nomeProduto = nomeProduto;
         this.estabelecimento = estabelecimento;
@@ -545,7 +549,7 @@ function abreCampoCadastro(tipo) {
                         <!-- Input que receberá a foto -->
                         <input type="file"
                             id="inputFotoProduto"
-                            accept="image/"
+                            accept="image/*"
                             hidden>
 
                         <!-- Canvas para capturar a imagem -->
@@ -979,55 +983,74 @@ function calculaValorUnitario() {
     campoinputValorUnitarioPesoProduto.value = totalPrecoPeso.toFixed(5)
 }
 
+
+let fotoProduto = '';
+
 function abrirCameraProduto() {
     const inputFoto = document.getElementById('inputFotoProduto');
 
     if (!inputFoto) {
-        console.error('Input da foto não encontrado.');
+        console.error('Campo inputFotoProduto não encontrado.');
         return;
     }
 
-    // Abrir a câmera ou o seletor de imagens.
-    inputFoto.click();
+    // Permitir selecionar novamente a mesma imagem.
+    inputFoto.value = '';
 
-    // Processar a foto selecionada.
+    // Configurar o evento de seleção.
     inputFoto.onchange = function () {
-        const arquivo = inputFoto.files[0];
-
-        if (!arquivo) {
-            return;
-        }
-
-        // Validar se o arquivo é uma imagem.
-        if (!arquivo.type.startsWith('image/')) {
-            alert('Selecione um arquivo de imagem válido.');
-            inputFoto.value = '';
-            return;
-        }
-
-        const preview = document.getElementById('previewFoto');
-        const placeholder = document.getElementById('placeholderFoto');
-
-        // Exibir a foto.
-        preview.src = URL.createObjectURL(arquivo);
-        preview.style.display = 'block';
-
-        // Ocultar a imagem padrão.
-        placeholder.style.display = 'none';
+        carregarFotoProduto(this);
     };
+
+    // Abrir o seletor de imagens.
+    inputFoto.click();
 }
 
 function carregarFotoProduto(input) {
     const arquivo = input.files[0];
 
+    const preview = document.getElementById('previewFoto');
+    const placeholder = document.getElementById('placeholderFoto');
+    const video = document.getElementById('videoCameraProduto');
+
     if (!arquivo) {
+        return;
+    }
+
+    if (!arquivo.type.startsWith('image/')) {
+        alert('Selecione um arquivo de imagem válido.');
+        input.value = '';
         return;
     }
 
     const leitor = new FileReader();
 
     leitor.onload = function (evento) {
+        // Armazenar a imagem em Base64.
         fotoProduto = evento.target.result;
+
+        // Atualizar a pré-visualização.
+        if (preview) {
+            preview.src = fotoProduto;
+            preview.style.display = 'block';
+        }
+
+        // Ocultar a mensagem de imagem ausente.
+        if (placeholder) {
+            placeholder.style.display = 'none';
+        }
+
+        // Ocultar a câmera, caso esteja aberta.
+        if (video) {
+            video.style.display = 'none';
+        }
+
+        console.log('Imagem carregada com sucesso.');
+    };
+
+    leitor.onerror = function () {
+        console.error('Erro ao carregar a imagem.');
+        alert('Não foi possível carregar a imagem selecionada.');
     };
 
     leitor.readAsDataURL(arquivo);
