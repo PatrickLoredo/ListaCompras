@@ -1037,6 +1037,7 @@ function carregarFotoProduto(input) {
 
         // Ocultar a mensagem de imagem ausente.
         if (placeholder) {
+            placeholder.classList.add('d-none');
             placeholder.style.display = 'none';
         }
 
