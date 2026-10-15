@@ -71,10 +71,8 @@ class Categoria {
     }
 }
 
-// 3. API DO IBGE
 const API_IBGE = 'https://servicodados.ibge.gov.br/api/v1/localidades';
 
-// 4. CARREGAR ESTADOS
 async function carregarEstados(idEstado) {
     const selectEstado = document.getElementById(idEstado);
 
@@ -116,7 +114,6 @@ async function carregarEstados(idEstado) {
     }
 }
 
-// 5. CARREGAR CIDADES
 async function carregarCidades(siglaEstado, selectCidade) {
     if (!selectCidade) {
         console.error('Campo de cidade não encontrado.');
@@ -168,7 +165,6 @@ async function carregarCidades(siglaEstado, selectCidade) {
     }
 }
 
-// 6. CONFIGURAR ESTADO E CIDADE
 function configurarEstadosECidades(idEstado, idCidade) {
     const selectEstado = document.getElementById(idEstado);
     const selectCidade = document.getElementById(idCidade);
@@ -195,7 +191,6 @@ function configurarEstadosECidades(idEstado, idCidade) {
     });
 }
 
-// 7. GERAR IDs
 function geraId(alias, nomeArray, inputID) {
     const campoID = document.getElementById(inputID);
 
@@ -222,7 +217,6 @@ function ordenaArray(nomeArray) {
     );
 }
 
-// 8. POPULAR SELECTS COM ARRAYS
 function populaDados(campoId, array, chave) {
     const campoSelect = document.getElementById(campoId);
 
@@ -247,7 +241,6 @@ function populaDados(campoId, array, chave) {
     });
 }
 
-// 9. ABRIR FORMULÁRIO DINÂMICO
 function abreCampoCadastro(tipo) {
     const localCampo = document.getElementById('campoCadastro');
     const cardPrincipal = document.getElementById('cardPrincipalCadastro')
@@ -381,10 +374,12 @@ function abreCampoCadastro(tipo) {
                         data-bs-target="#exibicaoEstabelecimentosTodos"
                         aria-expanded="false"
                         aria-controls="exibicaoEstabelecimentosTodos"
-                        onclick="popularExibicao('produto','nome','estabelecimento', 'exibicaoEstabelecimentosTodos', arrayEstabelecimentos)">
+                        onclick="popularExibicao('produto','nome','estabelecimento', 'exibicaoEstabelecimentosTodos', arrayEstabelecimentos, 'pill_Estabelecimento')">
 
                         <span class="uppercase">ver todos ${tipo}</span>&nbsp;&nbsp;&nbsp;
                         <i class="fa fa-eye"></i>
+
+                        <span class="bg-warning rounded-pill mostradorQtdPopulacao" id="pill_Estabelecimento"></span>
                     </button>
                 </div>
             </div>
@@ -416,7 +411,7 @@ function abreCampoCadastro(tipo) {
         // Também preencher o campo de ID da área principal.
         geraId('est', arrayEstabelecimentos, 'inputIDCadastroEstabelecimento');
 
-        popularExibicao('produto', 'exibicaoEstabelecimentosTodos', arrayEstabelecimentos)
+        popularExibicao('produto', 'exibicaoEstabelecimentosTodos', arrayEstabelecimentos , 'pill_Estabelecimento')
     }
 
     // FORMULÁRIO DE PRODUTOS
@@ -426,7 +421,6 @@ function abreCampoCadastro(tipo) {
                 
                 <div class="col-lg-3 col-12 mb-3">
                     <div class="d-flex flex-column align-items-center gap-2">
-
                         <!-- Pré-visualização da foto -->
                         <img id="previewFoto"
                             class="p-2"
@@ -473,16 +467,28 @@ function abreCampoCadastro(tipo) {
                             </span>
                         </div>
 
-                        <!-- Botão para abrir a câmera -->
-                        <button type="button"
-                            id="btnAbrirCameraProduto"
-                            class="btn btn-primary btn-sm uppercase"
-                            onclick="abrirCameraProduto()"
-                            style="font-size: 0.7rem">
+                        <div class="row">
+                            <div class="col">
+                                <!-- Botão para abrir a câmera -->
+                                <button type="button" id="btnAbrirCameraProduto"
+                                    class="btn btn-primary btn-sm uppercase"
+                                    onclick="abrirCameraProduto()"
+                                    style="font-size: 0.7rem">
 
-                            <i class="fa fa-camera"></i>&nbsp;
-                            Tirar foto
-                        </button>
+                                    <i class="fa fa-camera"></i>&nbsp;
+                                    Tirar foto  
+                                </button>
+
+                                <button type="button" class="btn btn-sm btn-danger uppercase"
+                                    type="button"
+                                    onclick="abrirLeitorCodigoBarras()"
+                                    title="Ler código de barras"
+                                    style="font-size: 0.7rem">
+                                    <i class="fa fa-barcode"></i>
+                                    código de barras
+                                </button>
+                            </div>
+                        </div>
 
                         <!-- Botões exibidos durante a captura -->
                         <div id="botoesCameraProduto"
@@ -561,17 +567,7 @@ function abreCampoCadastro(tipo) {
                                     type="text"
                                     class="form-control"
                                     id="inputCodigoBarrasProduto"
-                                    placeholder="Código de barras"
-                                >
-
-                                <button
-                                    class="btn btn-sm btn-danger input-group-text"
-                                    type="button"
-                                    onclick="abrirLeitorCodigoBarras()"
-                                    title="Ler código de barras">
-
-                                    <i class="fa fa-barcode"></i>
-                                </button>
+                                    placeholder="Código de barras">
                             </div>
 
                             <!-- MODAL DO LEITOR -->
@@ -854,7 +850,6 @@ function abreCampoCadastro(tipo) {
     }
 }
 
-// 10. CONFIGURAR COR DE NOTA ESTABELECIMENTO
 function configurarAvaliacaoEstabelecimento() {
     const avaliacao = document.getElementById('avaliacaoEstabelecimento');
     const inputNota = document.getElementById('inputNotaEstabelecimento');
@@ -922,59 +917,69 @@ function salvarCadastro(tipo) {
         ordenaArray(arrayCategorias)
         popularExibicao('categoria', 'cardBodyExibicaoCategorias', arrayCategorias)
     }
-if (tipo === 'cadastroEstabelecimento') {
-    const inputIdEstabelecimento =document.getElementById('inputIdEstabelecimento');
-    const inputNomeEstabelecimento =document.getElementById('inputNomeEstabelecimento');
-    const selectEstadoEstabelecimento =document.getElementById('selectEstadoEstabelecimento');
-    const selectCidadeEstabelecimento =document.getElementById('selectCidadeEstabelecimento');
-    const inputEnderecoEstabelecimento =document.getElementById('inputEnderecoEstabelecimento');
-    const inputNumeroEstabelecimento =document.getElementById('inputNumeroEstabelecimento');
-    const inputBairroEstabelecimento =document.getElementById('inputBairroEstabelecimento');
-    const inputNotaEstabelecimento =document.getElementById('inputNotaEstabelecimento');
+
+    if (tipo === 'cadastroEstabelecimento') {
+
+    const inputIdEstabelecimento = document.getElementById('inputIdEstabelecimento');
+    const inputNomeEstabelecimento = document.getElementById('inputNomeEstabelecimento');
+    const selectEstadoEstabelecimento = document.getElementById('selectEstadoEstabelecimento');
+    const selectCidadeEstabelecimento = document.getElementById('selectCidadeEstabelecimento');
+    const inputEnderecoEstabelecimento = document.getElementById('inputEnderecoEstabelecimento');
+    const inputNumeroEstabelecimento = document.getElementById('inputNumeroEstabelecimento');
+    const inputBairroEstabelecimento = document.getElementById('inputBairroEstabelecimento');
+    const inputNotaEstabelecimento = document.getElementById('inputNotaEstabelecimento');
     const statusEstabelecimento = 'Ativo';
 
-    // Validar campos obrigatórios.
+    // Validar os campos obrigatórios.
     if (
         inputNomeEstabelecimento.value.trim() === '' ||
         selectEstadoEstabelecimento.value.trim() === '' ||
         selectCidadeEstabelecimento.value.trim() === ''
     ) {
-        alert('Preencha todos os campos obrigatórios: NOME, ESTADO e CIDADE.');
+        alert(
+            'Preencha todos os campos obrigatórios: NOME, ESTADO e CIDADE.'
+        );
         return;
     }
 
-    // Criar o objeto estabelecimento.
+    const nomeSalvo = inputNomeEstabelecimento.value.trim();
+
     const novoEstabelecimento = new Estabelecimento(
         inputIdEstabelecimento.value.trim(),
-        inputNomeEstabelecimento.value.trim(),
+        nomeSalvo,
         selectEstadoEstabelecimento.value.trim(),
         selectCidadeEstabelecimento.value.trim(),
         inputEnderecoEstabelecimento.value.trim(),
         inputNumeroEstabelecimento.value.trim(),
         inputBairroEstabelecimento.value.trim(),
         statusEstabelecimento,
-        inputNotaEstabelecimento.value.trim()
+        Number(inputNotaEstabelecimento.value) || 0
     );
 
     arrayEstabelecimentos.push(novoEstabelecimento);
-    localStorage.setItem('cadastroEstabelecimento' , JSON.stringify(arrayEstabelecimentos));
 
-    inputNomeEstabelecimento.value = ''
-    selectEstadoEstabelecimento.value = ''
-    selectCidadeEstabelecimento.value = ''
-    inputEnderecoEstabelecimento.value = ''
-    inputNumeroEstabelecimento.value = ''
-    inputBairroEstabelecimento.value = ''
+    localStorage.setItem('cadastroEstabelecimento',JSON.stringify(arrayEstabelecimentos));
 
-    geraId('EST', arrayEstabelecimentos, 'inputIDCadastroEstabelecimento');
-    alert(`Estabelecimento ${inputNomeEstabelecimento.value.toUpperCase()} cadastrado com Sucesso`)
-    popularExibicao('produto', 'exibicaoEstabelecimentosTodos', arrayEstabelecimentos)
+    inputNomeEstabelecimento.value = '';
+    selectEstadoEstabelecimento.value = '';
+    selectCidadeEstabelecimento.innerHTML =
+        '<option value="">Selecione primeiro um estado</option>';
+    selectCidadeEstabelecimento.disabled = true;
+    inputEnderecoEstabelecimento.value = '';
+    inputNumeroEstabelecimento.value = '';
+    inputBairroEstabelecimento.value = '';
+    inputNotaEstabelecimento.value = '0';
 
-}
-}
+    popularExibicao('produto','nome','estabelecimento', 'exibicaoEstabelecimentosTodos', arrayEstabelecimentos, 'pill_Estabelecimento')
+    geraId('EST',arrayEstabelecimentos,'inputIdEstabelecimento');
+    atualizaPill('pill_Estabelecimento', arrayEstabelecimentos);
+    // Confirmar o cadastro.
+    alert(`Estabelecimento "${nomeSalvo}" cadastrado com sucesso!`);
+}}
 
-function popularExibicao(escolha, idCardExibicao, nomeArray) {
+function popularExibicao(escolha, idCardExibicao, nomeArray, idPill) {
     const campoExibicaoCadastro = document.getElementById(idCardExibicao);
+    let contador = 0
 
     if (!campoExibicaoCadastro) {
         console.error(`Elemento "${idCardExibicao}" não encontrado.`);
@@ -1004,6 +1009,7 @@ function popularExibicao(escolha, idCardExibicao, nomeArray) {
                 </div>
             `);
         });
+         atualizaPill('pill_Estabelecimento', arrayEstabelecimentos)
     } else {
         campoExibicaoCadastro.innerHTML = `
             <div class="alert alert-danger">
@@ -1013,6 +1019,17 @@ function popularExibicao(escolha, idCardExibicao, nomeArray) {
             </div>
         `;
     }
+}
+
+function atualizaPill(idPill, array){
+    const pillNome = document.getElementById(idPill)
+    const tamanhoArray = array.length;
+
+    pillNome.innerHTML = ''
+    pillNome.innerHTML = `
+        ${tamanhoArray}
+    `
+
 }
 
 function popularSelect(idSelect, nomeArray) {

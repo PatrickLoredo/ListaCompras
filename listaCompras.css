@@ -107,4 +107,11 @@ input,
 .btnImageProduto01{
     left: 10%;
 }
+.mostradorQtdPopulacao{
+    position: absolute;
+    left: 1%;
+    min-width: 30px;
+    padding: 5px 10px;
+    font-size: 0.9rem;
+}
 
